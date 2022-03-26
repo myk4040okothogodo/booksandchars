@@ -1,0 +1,210 @@
+import React, {useEffect, useCallback, useState } from 'react'
+import { useFocusEffect } from "@react-navigation/native";
+import { connect } from 'react-redux';
+import {getBooks, getCharacters} from "../stores/booksandchars/bookActions";
+import { Icon, VStack, useColorModeValue, Fab } from 'native-base'
+import { AntDesign } from '@expo/vector-icons'
+import AnimatedColorBox from '../components/animated-color-box'
+import TaskList from '../components/task-list'
+import shortid from 'shortid'
+import Masthead from '../components/masthead'
+import NavBar from '../components/navbar'
+import Actions from '../components/actions'
+
+
+const initialData = [
+  {
+    id: shortid.generate(),
+    subject: 'A Game of Thrones',
+    done: false
+  },
+  {
+   id: shortid.generate(),
+   subject: 'A Storm of Swords',
+   done:false
+  },
+  {
+    id: shortid.generate(),
+    subject: 'A Clash of Kings',
+    done: false
+  },
+  {
+      id: shortid.generate(),
+      subject: 'A Storm of Swords',                                                         
+      done: false
+    },
+    {
+      id: shortid.generate(),
+      subject: 'The Hedge Knights',                                                         
+      done: false
+    },
+    {
+      id: shortid.generate(),
+      subject: 'A Feast for Crows',
+      done: false
+    },
+    {
+      id:shortid.generate(),
+      subject: 'The Sworn Sword',
+      done:false
+    },
+    {
+      id:shortid.generate(),
+      subject: 'The Mystery Knight',
+      done: false
+    },
+    {
+      id: shortid.generate(),
+      subject: 'A Dance with Dragons',
+      done: false
+    },
+    {
+      id:shortid.generate(),
+      subject: 'The Princess and the Queen',
+      done: false
+    },
+    {
+     id:shortid.generate(),
+     subject: 'The Rogue Prince',
+     done: false
+    }
+
+
+]
+
+const MainScreen =({getBooks, getCharacters,myBooks, myCharacters}) => {
+  const [data, setData] = useState(initialData)
+  const [editingItemId, setEditingItemId] = useState<string | null>(null)
+  
+  useFocusEffect(
+    React.useCallback(() => {
+        getBooks()
+        getCharacters()
+      }, [])
+  )
+
+  useEffect(
+     () => {
+       setData((data) => {
+           myBooks.map((item) => {
+              data.append({id:item.id, subject:item.name, done:false})
+             });
+         })
+
+       },[myBooks]);
+  
+  const handleToggleTaskItem = useCallback(item => {
+    setData(prevData => {
+      const newData = [...prevData]
+      const index = prevData.indexOf(item)
+      newData[index] = {
+        ...item,
+        done: !item.done
+      }
+      return newData
+    })
+  }, [])
+  const handleChangeTaskItemSubject = useCallback((item, newSubject) => {
+    setData(prevData => {
+      const newData = [...prevData]
+      const index = prevData.indexOf(item)
+      newData[index] = {
+        ...item,
+        subject: newSubject
+      }
+      return newData
+    })
+  }, [])
+  const handleFinishEditingTaskItem = useCallback(_item => {
+    setEditingItemId(null)
+  }, [])
+  const handlePressTaskItemLabel = useCallback(item => {
+    setEditingItemId(item.id)
+  }, [])
+  const handleRemoveItem = useCallback(item => {
+    setData(prevData => {
+      const newData = prevData.filter(i => i !== item)
+      return newData
+    })
+  }, [])
+
+  return (
+    <AnimatedColorBox
+      flex={1}
+      bg={useColorModeValue('warmGray.50', 'primary.900')}
+      w="full"
+    >
+      <Masthead
+        title="Currently reading,"
+        image={
+          require('../assets/green.jpg')}
+      >
+        <NavBar />
+      </Masthead>
+      <VStack
+        flex={1}
+        space={1}
+        bg={useColorModeValue('warmGray.50', 'primary.900')}
+        mt="-20px"
+        borderTopLeftRadius="20px"
+        borderTopRightRadius="20px"
+        pt="20px"
+      >
+        console.log{data};
+        <TaskList
+          data={data}
+          onToggleItem={handleToggleTaskItem}
+          onChangeSubject={handleChangeTaskItemSubject}
+          onFinishEditing={handleFinishEditingTaskItem}
+          onPressLabel={handlePressTaskItemLabel}
+          onRemoveItem={handleRemoveItem}
+          editingItemId={editingItemId}
+        />
+      </VStack>
+      
+      <Fab
+        position="absolute"
+        renderInPortal={false}
+        size="sm"
+        icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />}
+        colorScheme={useColorModeValue('blue', 'darkBlue')}
+        bg={useColorModeValue('blue.500', 'blue.400')}
+        onPress={() => {
+          const id = shortid.generate()
+          setData([
+            {
+              id,
+              subject: '',
+              done: false
+            },
+            ...data
+          ])
+          setEditingItemId(id)
+        }}
+      /> 
+      {/*<Actions  />*/}
+    </AnimatedColorBox>
+  )
+}
+
+
+function mapStateToProps(state){
+  return {
+    myBooks: state.booksReducer.myBooks,
+    myCharacters: state.booksReducer.myCharacters
+   }
+  }
+
+function mapDispatchToProps(dispatch){
+    return{
+        getBooks: (books, orderBy) => {
+            return dispatch(getBooks(books, orderBy))
+          },
+
+          getCharacters: (characters, sortBy, orderBy) =>{
+            return dispatch(getCharacters(characters, sortBy, orderBy))
+            }
+      }
+  }  
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);  
