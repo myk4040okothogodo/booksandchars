@@ -19,7 +19,8 @@ const MainScreen = ({getBooks, myBooks}) => {
 
   useEffect(
     () => {
-        getBooks()
+        data = [];
+        getBooks();
       }, [])
   
   
