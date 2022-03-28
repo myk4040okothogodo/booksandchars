@@ -33,7 +33,7 @@ export function getBooks(books=[],orderBy='release_date')
         dispatch(getBooksBegin())
         let ids = books.map((item) => {return item.id}).join(",")
 
-        let apiUrl = 'https://anapioficeandfire.com/api/books?orderBy=${orderBy}'
+        let apiUrl = 'https://powerful-fortress-46661.herokuapp.com/api/books'
         
         return axios ({
             url: apiUrl,
@@ -91,7 +91,7 @@ export function getCharacters(characters=[],sortBy='gender',orderBy='release_dat
         dispatch(getCharactersBegin())
         let ids = characters.map((item) => {return item.id}).join(",")
 
-        let apiUrl = 'https://anapioficeandfire.com/api/characters?sort=${sortBy}'
+        let apiUrl = 'https://powerful-fortress-46661.herokuapp.com/api/characters'
         
         return axios ({
             url: apiUrl,

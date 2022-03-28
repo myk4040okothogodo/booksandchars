@@ -16,16 +16,22 @@ const MainScreen = ({getBooks, myBooks}) => {
   const [data, setData] = useState([])
   const [editingItemId, setEditingItemId] = useState<string | null>(null)
 
-
+{/*
+  useEffect(
+    React.useCallback(() => {
+        getBooks()
+      }, [])
+  )
+  */}
+  
   useEffect(
     () => {
         getBooks()
-      }, [])
-  
-  
+        setData((data) => {
   for (var i=0; i< myBooks.length; i++){
-     data.push({id: shortid.generate(), subject:myBooks[i].name, done: false})};
-
+     data.push({id: shortid.generate(), subject:myBooks[i].name, done: false})}
+     });
+     },[])
  
   const handleToggleTaskItem = useCallback(item => {
     setData(prevData => {
@@ -94,7 +100,7 @@ const MainScreen = ({getBooks, myBooks}) => {
           editingItemId={editingItemId}
         />
       </VStack>
-      {/*<Fab
+      <Fab
         position="absolute"
         renderInPortal={false}
         size="sm"
@@ -113,8 +119,8 @@ const MainScreen = ({getBooks, myBooks}) => {
           ])
           setEditingItemId(id)
         }}
-      /> */}
-      <Actions  /> 
+      />
+     {/* <Actions  /> */}
     </AnimatedColorBox>
   )
 }

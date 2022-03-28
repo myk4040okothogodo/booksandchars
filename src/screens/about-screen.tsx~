@@ -31,7 +31,7 @@ const AboutScreen = () => {
         borderTopLeftRadius="20px"
         borderTopRightRadius="20px"
         bg={useColorModeValue('warmGray.50', 'primary.900')}
-        mt="-44px"
+        mt="-45px"
         pt="50px"
         p={4}
       >

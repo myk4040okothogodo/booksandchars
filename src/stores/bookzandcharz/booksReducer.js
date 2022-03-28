@@ -8,7 +8,7 @@ const initialState = {
 }
 
 const booksReducer = (state = initialState, action) => {
-    switch(action.type){
+    switch(action.type) {
         case bookActions.GET_BOOKS_BEGIN:
           return {
             ...state,
@@ -17,7 +17,7 @@ const booksReducer = (state = initialState, action) => {
       case bookActions.GET_BOOKS_SUCCESS:
           return {
             ...state,
-            myBooks: action.payload.MyBooks
+            myBooks: action.payload.myBooks
           }
       case bookActions.GET_BOOKS_FAILURE:
           return {
